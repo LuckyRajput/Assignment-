@@ -1,0 +1,53 @@
+CREATE SCHEMA `moviesdb` ;
+
+CREATE TABLE `moviesdb`.`actor` (
+  `ActorId` VARCHAR(36) NOT NULL,
+  `ActorName` VARCHAR(200) NULL,
+  `Bio` LONGTEXT NULL,
+  `DOB` DATETIME NULL,
+  `Gender` VARCHAR(15) NULL,
+  PRIMARY KEY (`ActorId`));
+
+CREATE TABLE `moviesdb`.`producer` (
+  `ProducerId` VARCHAR(36) NOT NULL,
+  `ProducerName` VARCHAR(100) NULL,
+  `Bio` LONGTEXT NULL,
+  `Company` VARCHAR(300) NULL,
+  `DOB` DATETIME NULL,
+  `Gender` VARCHAR(15) NULL,
+  PRIMARY KEY (`ProducerId`));
+
+
+CREATE TABLE `moviesdb`.`movie` (
+  `MovieId` VARCHAR(36) NOT NULL,
+  `MovieName` MEDIUMTEXT NULL,
+  `Description` LONGTEXT NULL,
+  `DateOfRelease` DATETIME NULL,
+  `ProducerId` VARCHAR(36) NULL,
+  `MoviePoster` BLOB NULL,
+  PRIMARY KEY (`MovieId`),
+  INDEX `FK_Movie_Producer_MovieProducerId_idx` (`ProducerId` ASC) VISIBLE,
+  CONSTRAINT `FK_Movie_Producer_MovieProducerId`
+    FOREIGN KEY (`ProducerId`)
+    REFERENCES `moviesdb`.`producer` (`ProducerId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE `moviesdb`.`movieactor` (
+  `MovieActorId` VARCHAR(36) NOT NULL,
+  `MovieId` VARCHAR(36) NULL,
+  `ActorId` VARCHAR(36) NULL,
+  `Role` VARCHAR(100) NULL,
+  PRIMARY KEY (`MovieActorId`),
+  INDEX `FK_Movie_Actor_idx` (`MovieId` ASC) VISIBLE,
+  INDEX `FK_Actor_Movie_idx` (`ActorId` ASC) VISIBLE,
+  CONSTRAINT `FK_Movie_Actor`
+    FOREIGN KEY (`MovieId`)
+    REFERENCES `moviesdb`.`movie` (`MovieId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_Actor_Movie`
+    FOREIGN KEY (`ActorId`)
+    REFERENCES `moviesdb`.`actor` (`ActorId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
